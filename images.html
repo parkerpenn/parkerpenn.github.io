@@ -111,10 +111,29 @@
                 margin-right: 10%;
             }
           
-                    img {
-                        width: 500px;
-                        height: 500px;
+                    /* thumbnails (100x100) */
+                    .thumb {
+                        width: 100px;
+                        height: 100px;
                         object-fit: cover;
+                        cursor: pointer;
+                        border-radius: 6px;
+                        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+                        margin: 6px;
+                    }
+
+                    /* main display image */
+                    .main-image {
+                        width: 500px;
+                        max-width: 90vw;
+                        height: 500px;
+                        max-height: 70vh;
+                        object-fit: contain;
+                        display: block;
+                        margin: 0 auto 12px auto;
+                        border-radius: 8px;
+                        background: #fff;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
                     }
 
             /* Hide the images by default */
@@ -144,16 +163,89 @@
             </nav>
                 <!-- Start slideshow creation for portfolio. -->
         
-<!-- Add this in your content section -->
-<div class="mt-8">
-  <h3 class="text-2xl font-bold mb-4">My Photo Gallery</h3>
-  <div class="flex flex-wrap gap-4">
-  <img src="assets/IMG_5168.JPG" alt="Photo 1" class="w-32 h-32 object-cover rounded-lg shadow-md">
-    <img src="assets/IMG_5169.JPG" alt="Photo 1" class="w-32 h-32 object-cover rounded-lg shadow-md">
-    <img src="assets/IMG_5159.JPG" alt="Photo 1" class="w-32 h-32 object-cover rounded-lg shadow-md">
-    <img src="assets/IMG_5166.JPG" alt="Photo 1" class="w-32 h-32 object-cover rounded-lg shadow-md">
-    <img src="assets/IMG_5176.JPG" alt="Photo 1" class="w-32 h-32 object-cover rounded-lg shadow-md">
-  </div>
-</div>
+<!-- Add this in your content section: dynamic gallery -->
+<section class="mt-8">
+    <h3 class="text-2xl font-bold mb-4">My Photo Gallery</h3>
+
+    <!-- Main display image -->
+    <img id="mainImage" src="" alt="Main photo" class="main-image">
+
+    <!-- Thumbnails will be injected here -->
+    <div id="thumbnails" style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px;">
+    </div>
+
+    <p style="text-align:center; margin-top:8px;">Tip: click a thumbnail or use ← → keys to navigate.</p>
+
+    <script>
+        // list of images to show (root + assets directory)
+        const images = [
+            // root images
+            'IMG_5162.JPG',
+            'IMG_5163.JPG',
+            'IMG_5171.JPG',
+            'IMG_5173.JPG',
+            'IMG_5177.JPG',
+            // assets folder
+            'assets/IMG_4803.JPG',
+            'assets/IMG_4804.JPG',
+            'assets/IMG_4822.JPG',
+            'assets/IMG_4830.JPG',
+            'assets/IMG_4838.JPG',
+            'assets/IMG_4842.JPG',
+            'assets/IMG_4843.JPG',
+            'assets/IMG_5159.JPG',
+            'assets/IMG_5160.JPG',
+            'assets/IMG_5161.JPG',
+            'assets/IMG_5164.JPG',
+            'assets/IMG_5165.JPG',
+            'assets/IMG_5166.JPG',
+            'assets/IMG_5167.JPG',
+            'assets/IMG_5168.JPG',
+            'assets/IMG_5169.JPG',
+            'assets/IMG_5170.JPG',
+            'assets/IMG_5172.JPG',
+            'assets/IMG_5174.JPG',
+            'assets/IMG_5175.JPG',
+            'assets/IMG_5176.JPG',
+            'assets/IMG_5178.JPG',
+            'assets/IMG_5179.JPG',
+            'assets/IMG_5180.JPG'
+        ];
+
+        const mainImage = document.getElementById('mainImage');
+        const thumbs = document.getElementById('thumbnails');
+        let currentIndex = 0;
+
+        function showImage(index) {
+            if (index < 0) index = images.length - 1;
+            if (index >= images.length) index = 0;
+            currentIndex = index;
+            mainImage.src = images[index];
+            // highlight active thumb
+            document.querySelectorAll('#thumbnails img').forEach((el, i) => {
+                el.style.outline = i === index ? '3px solid #ff9800' : 'none';
+            });
+        }
+
+        // populate thumbnails
+        images.forEach((src, i) => {
+            const t = document.createElement('img');
+            t.src = src;
+            t.alt = `Photo ${i+1}`;
+            t.className = 'thumb';
+            t.addEventListener('click', () => showImage(i));
+            thumbs.appendChild(t);
+        });
+
+        // keyboard navigation
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') showImage(currentIndex - 1);
+            if (e.key === 'ArrowRight') showImage(currentIndex + 1);
+        });
+
+        // start with first image if available
+        if (images.length) showImage(0);
+    </script>
+</section>
     </body>
 </html>
